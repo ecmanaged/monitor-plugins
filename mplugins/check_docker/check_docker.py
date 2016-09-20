@@ -9,46 +9,47 @@ from __mplugin import OK, CRITICAL
 
 docker_py_error = False
 try:
-    from docker import Client
+    import requests_unixsocket
+    import json
 except:
     docker_py_error = True
 
 
 class CheckDocker(MPlugin):
     def get_stats(self, base_url, container_name):
-        cli = Client(base_url=base_url)
+        base = "http+unix://%2Fvar%2Frun%2Fdocker.sock"
+        url = "/containers/json"
 
+        session = requests_unixsocket.Session()
         try:
-            cli.info()
+            resp = session.get(base + url)
+            respj = resp.json()
         except:
-            self.exit(CRITICAL, message="can not connect to docker client")
-
-        containers = cli.containers()
+            return []
 
         id = None
+        statj = None
 
-        for container in containers:
-            if container['Names'][0].split('/')[-1] == container_name:
+        for container in respj:
+            if container['name'] == container_name and container['Status'].startswith('Up'):
                 id = container['Id']
-                break
 
         if id:
-            stats_obj = cli.stats(id, True)
+            stat_url = "/containers/%s/stats?stream=0" % id
+            stat = session.get(base + stat_url)
+            statj = stat.json()
 
-            for data in stats_obj:
-                return data
-                    
-        return None
+        return statj
 
     def run(self):
         if docker_py_error:
-            self.exit(CRITICAL, message="please install docker-py")
+            self.exit(CRITICAL, message="please install requests_unixsocket")
 
         base_url = self.config.get('base_url')
         container_name = self.config.get('container_name')
 
         stat = self.get_stats(base_url, container_name)
-        
+
         if not stat:
             self.exit(CRITICAL, message="No container found with name: %s" %container_name)
 
@@ -144,7 +145,7 @@ class CheckDocker(MPlugin):
 
         }
         self.exit(OK, data, metrics)
-                  
-if __name__ == '__main__':    
+
+if __name__ == '__main__':
     monitor = CheckDocker()
     monitor.run()
