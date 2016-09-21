@@ -54,7 +54,6 @@ class CheckIIS(MPlugin):
         ]
 
         gauge_data = [
-            'ServiceUptime',
             'CurrentConnections'
         ]
 
@@ -93,9 +92,6 @@ class CheckIIS(MPlugin):
         data.update(tmp_gauge)
 
         metrics = {
-            'Service Uptime': {
-                'Uptime': data['ServiceUptime'],
-                },
             'Network': {
                 'TotalBytesSent': data['TotalBytesSent'],
                 'TotalBytesReceived': data['TotalBytesReceived'],
