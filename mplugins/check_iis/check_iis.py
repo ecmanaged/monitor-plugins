@@ -92,14 +92,16 @@ class CheckIIS(MPlugin):
         data.update(tmp_gauge)
 
         metrics = {
+            'Connections': {
+                'CurrentConnections': data['CurrentConnections'],
+                'TotalConnectionAttemptsAllInstances': data['TotalConnectionAttemptsAllInstances']
+            },
             'Network': {
                 'TotalBytesSent': data['TotalBytesSent'],
                 'TotalBytesReceived': data['TotalBytesReceived'],
                 'TotalBytesTransferred': data['TotalBytesTransferred'],
-                'CurrentConnections': data['CurrentConnections'],
                 'TotalFilesSent': data['TotalFilesSent'],
-                'TotalFilesReceived': data['TotalFilesReceived'],
-                'TotalConnectionAttemptsAllInstances': data['TotalConnectionAttemptsAllInstances']
+                'TotalFilesReceived': data['TotalFilesReceived']
                 },
             'Errors': {
                 'TotalNotFoundErrors': data['TotalNotFoundErrors'],
