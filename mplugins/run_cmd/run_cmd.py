@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import sys
-import os
 import shlex
 import subprocess
 
-sys.path.append('../../../plugins')
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'plugins'))
 
 from __mplugin import MPlugin
 from __mplugin import OK, CRITICAL

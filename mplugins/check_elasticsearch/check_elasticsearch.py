@@ -4,7 +4,8 @@ import urllib2
 import json
 
 import sys
-sys.path.append('/opt/ecmanaged/ecagent/plugins')
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'plugins'))
 
 from __mplugin import MPlugin
 from __mplugin import OK, CRITICAL

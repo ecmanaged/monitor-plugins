@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import sys
-sys.path.append('../../../plugins')
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'plugins'))
 
 from __mplugin import MPlugin
 from __mplugin import OK, WARNING, CRITICAL, UNKNOWN, TIMEOUT
@@ -31,7 +32,7 @@ class CheckTCP(MPlugin):
         try:
             remote_ip = socket.gethostbyname(host)
         except socket.gaierror:
-	    self.exit(CRITICAL, message="Hostname could not be resolved")
+            self.exit(CRITICAL, message="Hostname could not be resolved")
 
         # Connect
         start_time = time()
@@ -60,7 +61,7 @@ class CheckTCP(MPlugin):
         
         metrics = {
             'Connection time': {
-              'time': str(mytime) . 's'
+              'time': str(mytime)
             }
         }
         

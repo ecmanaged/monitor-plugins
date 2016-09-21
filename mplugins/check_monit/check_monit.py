@@ -6,12 +6,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import os
 import urllib2
-import sys
 import base64
 
-sys.path.append('../../../plugins')
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'plugins'))
 
 from __mplugin import MPlugin
 from __mplugin import OK, CRITICAL

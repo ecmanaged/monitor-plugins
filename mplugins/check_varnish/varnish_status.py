@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-import sys, subprocess 
-sys.path.append('/opt/ecmanaged/ecagent/plugins')
+import subprocess
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'plugins'))
 
 from __mplugin import MPlugin
 from __mplugin import OK, CRITICAL, TIMEOUT
