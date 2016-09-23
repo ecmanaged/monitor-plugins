@@ -16,6 +16,7 @@ except:
 class MySQLStatus(MPlugin):
     def get_stats(self):
         host = self.config.get('host')
+        port = self.config.get('port')
         user = self.config.get('user')
         password = self.config.get('password')
 
@@ -23,7 +24,7 @@ class MySQLStatus(MPlugin):
             self.exit(CRITICAL, message="Please install python-mysqldb or MySQL-python")
         
         try:
-            conn = Database.connect(host=host, user=user, passwd=password, connect_timeout=10)
+            conn = Database.connect(host=host,port=port, user=user, passwd=password, connect_timeout=10)
         except:
             self.exit(CRITICAL, message="Unable to connect to MySQL Database")
         
