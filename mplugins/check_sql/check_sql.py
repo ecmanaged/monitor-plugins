@@ -19,6 +19,7 @@ class CheckIIS(MPlugin):
     def get_stats(self):
         host = self.config.get('hostname', 'localhost')
         database = self.config.get('database')
+        # GRANT VIEW SERVER STATE TO username
         username = self.config.get('username')
         password = self.config.get('password')
         conn_str = self._conn_string(host, username, password, database)
