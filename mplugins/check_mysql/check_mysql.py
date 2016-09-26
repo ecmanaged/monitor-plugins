@@ -16,7 +16,7 @@ except:
 class MySQLStatus(MPlugin):
     def get_stats(self):
         host = self.config.get('host')
-        port = self.config.get('port')
+        port = self.config.get('port', 3306)
         user = self.config.get('user')
         password = self.config.get('password')
 
