@@ -15,10 +15,10 @@ except:
 
 
 class CheckMySQLSlave(MPlugin):
-    def mysql_repchk(self, host, user, password):
+    def mysql_repchk(self, host, port, user, password):
 
         try:
-            conn = Database.connect(host=host, user=user, passwd=password, connect_timeout=10)
+            conn = Database.connect(host=host, port=int(port), user=user, passwd=password, connect_timeout=10)
         except:
             self.exit(CRITICAL, message="Unable to connect to MySQL Database")
         try:
@@ -37,7 +37,7 @@ class CheckMySQLSlave(MPlugin):
         host = self.config.get('host')
         user = self.config.get('user')
         password = self.config.get('password')
-
+        port = self.config.get('port', 3306)
 
         if not host:
             self.exit(CRITICAL, message="Please provide host")
@@ -45,7 +45,7 @@ class CheckMySQLSlave(MPlugin):
         if not user or not password:
             self.exit(CRITICAL, message="Please provide user and password")
 
-        data = self.mysql_repchk(host, user, password)
+        data = self.mysql_repchk(host, port, user, password)
 
         if not data:
             self.exit(CRITICAL, message="status ERROR: metric SLAVE_STATUS string NOT_CONFIGURED")
