@@ -79,24 +79,34 @@ class CheckIIS(MPlugin):
         if not data:
             self.exit(CRITICAL, message="Unable fetch stats")
 
-
         metrics = {
-            'Access': {
-                'Page Splits/sec': data['Page Splits/sec'],
+            'Buffer Manager': {
+                'Buffer cache hit ratio': data['Buffer cache hit ratio'],
+                'Page life expectancy': data['Page life expectancy']
             },
-            'Stats': {
-                'Batch Requests/sec': data['Batch Requests/sec'],
+            'Checkpoint Pages': {
+                'Checkpoint pages/sec': data['Checkpoint pages/sec']
+
+            },
+            'SQL Statistics': {
                 'SQL Compilations/sec': data['SQL Compilations/sec'],
-                'SQL Re-Compilations/sec': data['SQL Re-Compilations/sec'],
-                'User connections': data['User connections'],
-                'Lock Waits/sec': data['Lock Waits/sec'],
+                'SQL Re-Compilations/sec': data['SQL Re-Compilations/sec']
+            },
+            'Batch Requests': {
+                'Batch Requests/sec': data['Batch Requests/sec'],
+            },
+            'General Statistics': {
+                'User connections': data['User connections']
+            },
+            'Locks': {
+                'Lock Waits/sec': data['Lock Waits/sec']
+            },
+            'Access Methods': {
                 'Page Splits/sec': data['Page Splits/sec']
             },
-            'Buffer': {
-                'Buffer cache hit ratio': data['Buffer cache hit ratio'],
-                'Page life expectancy': data['Page life expectancy'],
-                'Checkpoint pages/sec': data['Checkpoint pages/sec']
-            }
+            'General Statistic': {
+                'Processes Blocked': data['Processes Blocked']
+            },
         }
         self.exit(OK, data, metrics)
 
