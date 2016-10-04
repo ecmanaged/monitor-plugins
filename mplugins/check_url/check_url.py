@@ -22,10 +22,9 @@ class CheckURL(MPlugin):
         data_raw = self.config.get('data')
 
         if not url:
-           self.exit(CRITICAL, message="Invalid URL")
+            self.exit(CRITICAL, message="Invalid URL")
 
         headers = {}
-
         if headers_raw:
             headers_list = headers_raw.split(',')
             for item in headers_list:
@@ -33,7 +32,6 @@ class CheckURL(MPlugin):
                 headers[key.strip()] = value.strip()
 
         data = {}
-
         if data_raw:
             try:
                 data = json.loads(data_raw)
@@ -62,38 +60,37 @@ class CheckURL(MPlugin):
                         req = urllib2.Request(url, urllib.urlencode(data), headers)
                 else:
                     req = urllib2.Request(url, urllib.urlencode(data))
-                urlopen = urllib2.urlopen(req)
+
             except:
-                self.exit(CRITICAL, message="Unable to POST to open URL")
+                self.exit(CRITICAL, message="Unable to request URL")
 
         else:
             if headers:
                 try:
                     req = urllib2.Request(url, json.dumps({}), headers)
-                    print req
-                    urlopen = urllib2.urlopen(req)
                 except:
-                    self.exit(CRITICAL, message="Unable to open URL")
+                    self.exit(CRITICAL, message="Unable to request URL")
             else:
-                # Default is GET
-                try:
-                    urlopen = urllib.urlopen(url)
-                except:
-                    self.exit(CRITICAL, message="Unable to open URL")
+                req = url
+
+        try:
+            urlopen = urllib2.urlopen(req)
+        except:
+            self.exit(CRITICAL, message="Unable to open URL")
 
         end_time = time()
         mytime = "%.2f" %(end_time - start_time)
 
-        # Get size
-        size = 0
         headers = urlopen.info()
         content = ''.join(urlopen.readlines())
         code = urlopen.getcode()
 
+        size = 0
         if "content-length" in headers:
             size = int(headers["Content-Length"])
         else:
             size = len(content)
+
         urlopen.close()
 
         data = {
