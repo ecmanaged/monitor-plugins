@@ -81,7 +81,6 @@ class CheckProcess(MPlugin):
 	            uids = proc.uids
     	            gids = proc.gids
 	            status = proc.status
-   	            nice = proc.get_nice
                     nice = proc.nice
 	        
         if count:
