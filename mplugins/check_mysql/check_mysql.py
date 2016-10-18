@@ -68,7 +68,12 @@ class MySQLStatus(MPlugin):
             'Qcache_queries_in_cache',
             'Innodb_pages_created',
             'Innodb_pages_read',
-            'Innodb_pages_written'
+            'Innodb_pages_written',
+            'Handler_delete',
+            'Handler_read_first',
+            'Handler_read_rnd',
+            'Handler_update',
+            'Handler_write'
         ]
         
         gauge_data = [
@@ -84,12 +89,7 @@ class MySQLStatus(MPlugin):
             'Slow_launch_threads',
             'Threads_cached',
             'Threads_connected',
-            'Threads_running',
-            'Handler_delete',
-            'Handler_read_first',
-            'Handler_read_rnd',
-            'Handler_update',
-            'Handler_write'
+            'Threads_running'
         ]
         
         tmp_counter = {}
