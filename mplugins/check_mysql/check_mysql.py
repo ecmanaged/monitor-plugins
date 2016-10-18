@@ -73,15 +73,15 @@ class MySQLStatus(MPlugin):
             'Handler_read_first',
             'Handler_read_rnd',
             'Handler_update',
-            'Handler_write'
+            'Handler_write',
+            'Innodb_row_lock_time',
+            'Innodb_row_lock_waits'
         ]
         
         gauge_data = [
             'Innodb_row_lock_current_waits',
-            'Innodb_row_lock_time',
             'Innodb_row_lock_time_avg',
             'Innodb_row_lock_time_max',
-            'Innodb_row_lock_waits',
             'Open_files',
             'Open_streams',
             'Open_table_definitions',
