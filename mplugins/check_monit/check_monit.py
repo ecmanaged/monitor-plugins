@@ -49,11 +49,11 @@ class Monit(MPlugin):
 
             if not state:
                 result = CRITICAL
-                msglist.append(name.upper() + ' is not running')
+                msglist.append("%s: %s is critical" % (type, name))
 
             if not enabled:
                 result = CRITICAL
-                msglist.append(name.upper() + ' is not monitored')
+                msglist.append("%s: %s is not monitored" % (type, name))
 
             # Custom name
             name = name + ': ' + type
@@ -169,11 +169,6 @@ class MonitConn(dict):
                 self.data['size'] = self._xmlfind('size')
 
             self.monitored = bool(int(self._xmlfind('monitor')))
-
-        # def _action(self, action):
-        #     url = self.daemon.baseurl + '/' + self.name
-        #     requests.post(url, auth=self.daemon.auth, data={'action': action})
-        #     self.daemon.update()
 
         def _xmlfind(self, key, type='text'):
             retval = ''
