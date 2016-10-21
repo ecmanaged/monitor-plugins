@@ -49,11 +49,11 @@ class Monit(MPlugin):
 
             if not state:
                 result = CRITICAL
-                msglist.append("%s: %s is critical" % (type, name))
+                msglist.append("%s %s is critical" % (type, name))
 
             if not enabled:
                 result = CRITICAL
-                msglist.append("%s: %s is not monitored" % (type, name))
+                msglist.append("%s %s is not monitored" % (type, name))
 
             # Custom name
             name = name + ': ' + type
