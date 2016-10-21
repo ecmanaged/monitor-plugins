@@ -16,8 +16,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'plugi
 from __mplugin import MPlugin
 from __mplugin import OK, CRITICAL
 
-root_dir = os.path.dirname(os.path.realpath(__file__))
-DATA_FILE = (root_dir + '/persistent.data')
 MIN_METRICS = 3
 
 
