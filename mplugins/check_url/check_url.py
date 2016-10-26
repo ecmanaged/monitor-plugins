@@ -77,7 +77,7 @@ class CheckURL(MPlugin):
             urlopen = urllib2.urlopen(req)
             
         except urllib2.HTTPError as err:
-            self.exit(CRITICAL, message="%s: %s" % (err.code, err.msg))
+            self.exit(WARNING, message="%s: %s" % (err.code, err.msg))
             
         except Exception:
             self.exit(CRITICAL, message="Unable to open URL")
