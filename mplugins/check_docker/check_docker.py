@@ -30,8 +30,8 @@ class CheckDocker(MPlugin):
         id = None
         statj = None
 
-        for container in respj:
-            if container['name'] == container_name and container['Status'].startswith('Up'):
+        for name in container['Names']:
+            if container_name == name.split('/')[-1] and container['Status'].startswith('Up'):
                 id = container['Id']
 
         if id:
