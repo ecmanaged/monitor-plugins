@@ -30,9 +30,10 @@ class CheckDocker(MPlugin):
         id = None
         statj = None
 
-        for name in container['Names']:
-            if container_name == name.split('/')[-1] and container['Status'].startswith('Up'):
-                id = container['Id']
+        for container in respj:
+            for name in container['Names']:
+                if container_name == name.split('/')[-1] and container['Status'].startswith('Up'):
+                    id = container['Id']
 
         if id:
             stat_url = "/containers/%s/stats?stream=0" % id
