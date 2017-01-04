@@ -27,16 +27,20 @@ class CheckDocker(MPlugin):
         except:
             return []
 
-        id = None
+        container_id = None
         statj = None
 
         for container in respj:
-            for name in container['Names']:
-                if container_name == name.split('/')[-1] and container['Status'].startswith('Up'):
-                    id = container['Id']
+            try:
+                for name in container['Names']:
+                    if container_name == name.split('/')[-1] and container['Status'].startswith('Up'):
+                        container_id = container['Id']
+            except KeyError:
+                if container['name'] == container_name and container['Status'].startswith('Up'):
+                    container_id = container['Id']
 
-        if id:
-            stat_url = "/containers/%s/stats?stream=0" % id
+        if container_id:
+            stat_url = "/containers/%s/stats?stream=0" % container_id
             stat = session.get(base + stat_url)
             statj = stat.json()
 
