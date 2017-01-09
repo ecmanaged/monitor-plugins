@@ -24,8 +24,8 @@ class CheckDocker(MPlugin):
         try:
             resp = session.get(base + url)
             respj = resp.json()
-        except:
-            return []
+        except Exception as e:
+		    self.exit(CRITICAL, message=str(e))
 
         container_id = None
         statj = None
