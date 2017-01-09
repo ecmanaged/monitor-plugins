@@ -25,7 +25,7 @@ class CheckDocker(MPlugin):
             resp = session.get(base + url)
             respj = resp.json()
         except Exception as e:
-		    self.exit(CRITICAL, message=str(e))
+		    self.exit(CRITICAL, message="Run 'sudo usermod -a -G docker ecmanaged' and restart the agent")
 
         container_id = None
         statj = None
