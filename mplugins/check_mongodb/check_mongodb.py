@@ -18,7 +18,6 @@ except:
 
 
 class MongoDBStatus(MPlugin):
-
     def get_stats(self):
         host = self.config.get('hostname','localhost')
         port = int(self.config.get('port','27017'))
@@ -35,13 +34,10 @@ class MongoDBStatus(MPlugin):
                 c = Client('mongodb://'+host+'/'+database, port)
             else:
                 c = Client(host, port)
-        except ConnectionFailure, AutoReconnect:
+        except (ConnectionFailure, AutoReconnect):
             self.exit(CRITICAL, message="unable to connect to mongodb")
         else:
             return c.test.command("serverStatus")
-
-
-
 
     def run(self):
         if import_error:
@@ -53,9 +49,12 @@ class MongoDBStatus(MPlugin):
             self.exit(CRITICAL, message="status err unable to generate statistics")
 
         data = {'connection_available': s['connections']['available'],
-                'connection_current': s['connections']['current'], 'mem_mapped': s['mem']['mapped'],
-                'mem_resident': s['mem']['resident'], 'mem_virtual': s['mem']['virtual'],
-                'index_hits': s['indexCounters']['hits'], 'index_misses': s['indexCounters']['misses'],
+                'connection_current': s['connections']['current'],
+                'mem_mapped': s['mem']['mapped'],
+                'mem_resident': s['mem']['resident'],
+                'mem_virtual': s['mem']['virtual'],
+                'index_hits': s['indexCounters']['hits'],
+                'index_misses': s['indexCounters']['misses'],
                 'index_accesses': s['indexCounters']['accesses']}
         metrics = {
             'Connection': {
@@ -76,7 +75,7 @@ class MongoDBStatus(MPlugin):
         }
 
         self.exit(OK, data, metrics)
-                  
+
 if __name__ == '__main__':    
     monitor = MongoDBStatus()
     monitor.run()
