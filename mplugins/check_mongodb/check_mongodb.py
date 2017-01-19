@@ -52,10 +52,7 @@ class MongoDBStatus(MPlugin):
                 'connection_current': s['connections']['current'],
                 'mem_mapped': s['mem']['mapped'],
                 'mem_resident': s['mem']['resident'],
-                'mem_virtual': s['mem']['virtual'],
-                'index_hits': s['indexCounters']['hits'],
-                'index_misses': s['indexCounters']['misses'],
-                'index_accesses': s['indexCounters']['accesses']}
+                'mem_virtual': s['mem']['virtual']}
         metrics = {
             'Connection': {
                 'Current': data['connection_current'],
@@ -66,12 +63,6 @@ class MongoDBStatus(MPlugin):
                 'Resident': data['mem_resident'],
                 'Virtual': data['mem_virtual']
             },
-
-            'Index': {
-                'Hits': data['index_hits'],
-                'Misses': data['index_misses'],
-                'Accesses': data['index_accesses']
-            }
         }
 
         self.exit(OK, data, metrics)
