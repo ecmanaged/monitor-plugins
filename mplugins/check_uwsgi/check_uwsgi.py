@@ -19,7 +19,7 @@ class UWSGIStatus(MPlugin):
 
 
         host = self.config.get('host')
-        port =self.config.get('port')
+        port = self.config.get('port')
 
         retcode, raw_result = getstatusoutput('uwsgi --connect-and-read '+host+":"+port)
 
@@ -54,11 +54,11 @@ class UWSGIStatus(MPlugin):
         tmp_counter = {}
         for idx in counter_data:
             try:
-                tmp_counter[idx] = int(data.get(idx,0))
+                tmp_counter[idx] = int(data.get(idx, 0))
             except:
-                tmp_counter[idx] = data.get(idx,0)
+                tmp_counter[idx] = data.get(idx, 0)
 
-        tmp_counter = self.counters(tmp_counter,'uwsgi')
+        tmp_counter = self.counters(tmp_counter, 'uwsgi')
 
 
         data = tmp_counter.copy()

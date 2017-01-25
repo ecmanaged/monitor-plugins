@@ -72,27 +72,28 @@ class ApacheStatus(MPlugin):
         # a None instead which is nicer than getting unpredictable exceptions
         # when accessing the output later on.
 
-        parsed = {'total_accesses': None,
-                  'total_kbytes': None,
-                  'cpuload': None,
-                  'uptime': None,
-                  'requests_per_second': None,
-                  'bytes_per_second': None,
-                  'bytes_per_request': None,
-                  'busy_workers': None,
-                  'idle_workers': None,
-                  'waiting_for_connection': None,
-                  'starting_up': None,
-                  'reading_request': None,
-                  'sending_reply': None,
-                  'keepalive': None,
-                  'dns_lookup': None,
-                  'closing_connection': None,
-                  'logging': None,
-                  'gracefully_finishing': None,
-                  'idle_cleanup_of_worker': None,
-                  'open_slots': None
-                  }
+        parsed = {
+            'total_accesses': None,
+            'total_kbytes': None,
+            'cpuload': None,
+            'uptime': None,
+            'requests_per_second': None,
+            'bytes_per_second': None,
+            'bytes_per_request': None,
+            'busy_workers': None,
+            'idle_workers': None,
+            'waiting_for_connection': None,
+            'starting_up': None,
+            'reading_request': None,
+            'sending_reply': None,
+            'keepalive': None,
+            'dns_lookup': None,
+            'closing_connection': None,
+            'logging': None,
+            'gracefully_finishing': None,
+            'idle_cleanup_of_worker': None,
+            'open_slots': None
+            }
 
         # Do the nasty parsing. Doing this programatically may be
         # more extensible but it's much rougher looking.
@@ -102,7 +103,8 @@ class ApacheStatus(MPlugin):
             raw = '\n'.join(raw)
 
         for line in str(raw).splitlines():
-            if not line: continue
+            if not line:
+                continue
 
             if ': ' not in line:
                 continue
@@ -150,6 +152,6 @@ class ApacheStatus(MPlugin):
 
         return parsed
 
-
-monitor = ApacheStatus()
-monitor.run()
+if __name__ == '__main__':
+    monitor = ApacheStatus()
+    monitor.run()

@@ -42,7 +42,7 @@ class CheckURL(MPlugin):
                     data[key.strip()] = value.strip()
 
         # Set timeout
-        timeout = self.config.get('timeout',TIMEOUT)
+        timeout = self.config.get('timeout', TIMEOUT)
         socket.setdefaulttimeout(int(timeout))
 
         start_time = time()
@@ -75,10 +75,8 @@ class CheckURL(MPlugin):
 
         try:
             urlopen = urllib2.urlopen(req)
-            
         except urllib2.HTTPError as err:
             self.exit(WARNING, message="%s: %s" % (err.code, err.msg))
-            
         except Exception:
             self.exit(CRITICAL, message="Unable to open URL")
 
@@ -106,15 +104,15 @@ class CheckURL(MPlugin):
 
         metrics = {
             'Content Size': {
-              'size': size
+                'size': size
             },
             'Response time': {
-              'time': mytime
+                'time': mytime
             }
         }
 
-        self.exit(OK,data,metrics)
+        self.exit(OK, data, metrics)
 
-
-monitor = CheckURL()
-monitor.run()
+if __name__ == '__main__':
+    monitor = CheckURL()
+    monitor.run()

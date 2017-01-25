@@ -19,8 +19,8 @@ except:
 
 class MongoDBStatus(MPlugin):
     def get_stats(self):
-        host = self.config.get('hostname','localhost')
-        port = int(self.config.get('port','27017'))
+        host = self.config.get('hostname', 'localhost')
+        port = int(self.config.get('port', '27017'))
         database = self.config.get('database')
         username = self.config.get('username')
         password = self.config.get('password')
@@ -48,11 +48,13 @@ class MongoDBStatus(MPlugin):
         if not s:
             self.exit(CRITICAL, message="status err unable to generate statistics")
 
-        data = {'connection_available': s['connections']['available'],
-                'connection_current': s['connections']['current'],
-                'mem_mapped': s['mem']['mapped'],
-                'mem_resident': s['mem']['resident'],
-                'mem_virtual': s['mem']['virtual']}
+        data = {
+            'connection_available': s['connections']['available'],
+            'connection_current': s['connections']['current'],
+            'mem_mapped': s['mem']['mapped'],
+            'mem_resident': s['mem']['resident'],
+            'mem_virtual': s['mem']['virtual']
+        }
         metrics = {
             'Connection': {
                 'Current': data['connection_current'],
@@ -67,6 +69,6 @@ class MongoDBStatus(MPlugin):
 
         self.exit(OK, data, metrics)
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     monitor = MongoDBStatus()
     monitor.run()

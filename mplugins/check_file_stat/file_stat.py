@@ -21,15 +21,15 @@ class CheckFile(MPlugin):
         file = self.config.get('file_path')
         if not file:
             self.exit(CRITICAL, message="Invalid config")
-           
+
         if not os.path.isfile(file):
             self.exit(CRITICAL, message="File not found")
-        
+
         # Build hashes
         try:
             hasher_md5 = hashlib.md5()
             hasher_sha1 = hashlib.sha1()
-        
+
             # Read file in blocksizes (do not waste memory)
             with open(file, 'rb') as afile:
                 buf = afile.read(BLOCKSIZE)
@@ -37,16 +37,16 @@ class CheckFile(MPlugin):
                     hasher_md5.update(buf)
                     hasher_sha1.update(buf)
                     buf = afile.read(BLOCKSIZE)
-            
-            md5sum,sha1sum = hasher_md5.hexdigest(), hasher_sha1.hexdigest()        
-            
+
+            md5sum, sha1sum = hasher_md5.hexdigest(), hasher_sha1.hexdigest()
+
         except:
-            md5sum,sha1sum = '', ''
+            md5sum, sha1sum = '', ''
 
 
         # Read stat
-        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(file)                
-        
+        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(file)
+
         data = {
             'md5': md5sum,
             'sha1': sha1sum,
@@ -61,15 +61,15 @@ class CheckFile(MPlugin):
             'mtime': mtime,
             'ctime': ctime,
         }
-        
+
         metrics = {
             'File size': {
                 'size': str(size) + 'B'
             }
         }
-        
-        self.exit(OK,data,metrics)
-        
 
-monitor = CheckFile()
-monitor.run()
+        self.exit(OK, data, metrics)
+
+if __name__ == '__main__':
+    monitor = CheckFile()
+    monitor.run()

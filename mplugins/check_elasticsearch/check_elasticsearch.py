@@ -17,12 +17,12 @@ class ElasticSearchStatus(MPlugin):
 
         try:
             r = urllib2.urlopen('{h}{p}'.format(h=host, p=path))
-        except (urllib2.URLError, ValueError) as e:
+        except (urllib2.URLError, ValueError):
             self.exit(CRITICAL, message='error opening url')
 
         try:
             response = json.loads(r.read())
-        except Exception as e:
+        except Exception:
             self.exit(CRITICAL, message='error loading json')
 
         return response
@@ -43,10 +43,16 @@ class ElasticSearchStatus(MPlugin):
 
         h = self.call_to_cluster(host, '/_cluster/health')
 
-        data = {'number_of_nodes': h['number_of_nodes'], 'unassigned_shards': h['unassigned_shards'],
-                'timed_out': h['timed_out'], 'active_primary_shards': h['active_primary_shards'],
-                'relocating_shards': h['relocating_shards'], 'active_shards': h['active_shards'],
-                'initializing_shards': h['initializing_shards'], 'number_of_data_nodes': h['number_of_data_nodes']}
+        data = {
+            'number_of_nodes': h['number_of_nodes'],
+            'unassigned_shards': h['unassigned_shards'],
+            'timed_out': h['timed_out'],
+            'active_primary_shards': h['active_primary_shards'],
+            'relocating_shards': h['relocating_shards'],
+            'active_shards': h['active_shards'],
+            'initializing_shards': h['initializing_shards'],
+            'number_of_data_nodes': h['number_of_data_nodes']
+            }
 
         return data
 
@@ -55,7 +61,10 @@ class ElasticSearchStatus(MPlugin):
 
         s = self.get_stats(host, 'store')
 
-        data = {'size_in_bytes': s['size_in_bytes'], 'throttle_time_in_millis': s['throttle_time_in_millis']}
+        data = {
+            'size_in_bytes': s['size_in_bytes'],
+            'throttle_time_in_millis': s['throttle_time_in_millis']
+            }
 
         return data
 
@@ -64,9 +73,14 @@ class ElasticSearchStatus(MPlugin):
 
         s = self.get_stats(host, 'indexing')
 
-        data = {'delete_time_in_millis': s['delete_time_in_millis'], 'delete_total': s['delete_total'],
-                'delete_current': s['delete_current'], 'index_time_in_millis': s['index_time_in_millis'],
-                'index_total': s['index_total'], 'index_current': s['index_current']}
+        data = {
+            'delete_time_in_millis': s['delete_time_in_millis'],
+            'delete_total': s['delete_total'],
+            'delete_current': s['delete_current'],
+            'index_time_in_millis': s['index_time_in_millis'],
+            'index_total': s['index_total'],
+            'index_current': s['index_current']
+            }
 
         return data
 
@@ -75,8 +89,12 @@ class ElasticSearchStatus(MPlugin):
 
         s = self.get_stats(host, 'get')
 
-        data = {'missing_total': s['missing_total'], 'exists_total': s['exists_total'], 'current': s['current'],
-                'total': s['total']}
+        data = {
+            'missing_total': s['missing_total'],
+            'exists_total': s['exists_total'],
+            'current': s['current'],
+            'total': s['total']
+            }
 
         return data
 
@@ -85,10 +103,15 @@ class ElasticSearchStatus(MPlugin):
 
         s = self.get_stats(host, 'search')
 
-        data = {'query_total': s['query_total'], 'fetch_time_in_millis': s['query_time_in_millis'],
-                'fetch_total': s['fetch_total'], 'query_time_in_millis': s['fetch_time_in_millis'],
-                'open_contexts': s['open_contexts'], 'fetch_current': s['fetch_current'],
-                'query_current': s['query_current']}
+        data = {
+            'query_total': s['query_total'],
+            'fetch_time_in_millis': s['query_time_in_millis'],
+            'fetch_total': s['fetch_total'],
+            'query_time_in_millis': s['fetch_time_in_millis'],
+            'open_contexts': s['open_contexts'],
+            'fetch_current': s['fetch_current'],
+            'query_current': s['query_current']
+            }
 
         return data
 
@@ -97,7 +120,10 @@ class ElasticSearchStatus(MPlugin):
 
         s = self.get_stats(host, 'docs')
 
-        data = {'count': s['count'], 'deleted': s['deleted']}
+        data = {
+            'count': s['count'],
+            'deleted': s['deleted']
+            }
 
         return data
 

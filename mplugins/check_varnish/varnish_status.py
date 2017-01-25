@@ -117,5 +117,6 @@ class VarnishStatus(MPlugin):
 
         return parsed
 
-monitor = VarnishStatus()
-monitor.run()
+if __name__ == '__main__':
+    monitor = VarnishStatus()
+    monitor.run()

@@ -38,7 +38,7 @@ class Monit(MPlugin):
         for mon in mons.keys():
             state = mons[mon].running
             enabled = mons[mon].monitored
-            type = mons[mon].type
+            kind = mons[mon].type
             name = mons[mon].name
             extra = mons[mon].data
 
@@ -47,18 +47,18 @@ class Monit(MPlugin):
 
             if not state:
                 result = CRITICAL
-                msglist.append("%s %s is critical" % (type, name))
+                msglist.append("%s %s is critical" % (kind, name))
 
             if not enabled:
                 result = CRITICAL
-                msglist.append("%s %s is not monitored" % (type, name))
+                msglist.append("%s %s is not monitored" % (kind, name))
 
             # Custom name
-            name = name + ': ' + type
+            name = name + ': ' + kind
 
             # Add data
             data[name] = {
-                'type': type,
+                'kind': kind,
                 'state': state,
                 'enabled': enabled,
                 'data': extra
@@ -72,7 +72,7 @@ class Monit(MPlugin):
                 metrics[name][k] = extra[k]
                 count_metrics = count_metrics + 1
 
-            # Add placeholder for metrics (each monit has to have the same number of metrics)    
+            # Add placeholder for metrics (each monit has to have the same number of metrics)
             for i in range(count_metrics, MIN_METRICS):
                 metrics[name]['__ph__' + str(i)] = ''
 
@@ -168,34 +168,34 @@ class MonitConn(dict):
 
             self.monitored = bool(int(self._xmlfind('monitor')))
 
-        def _xmlfind(self, key, type='text'):
+        def _xmlfind(self, key, kind= 'text'):
             retval = ''
             try:
-                retval = self.xml.find(key).text
-                if type == 'float':
+                retval = self.xml.find(kind).text
+                if kind == 'float':
                     retval = float(retval)
 
-                if type == 'int':
+                if kind == 'int':
                     retval = int(retval)
 
             except:
                 pass
 
-            if not retval and type != 'text':
+            if not retval and kind != 'text':
                 retval = 0
 
             return retval
 
         def __repr__(self):
-            repr = self.type.capitalize()
+            repren = self.type.capitalize()
             if not self.running is None:
-                repr += self.running and ', running' or ', stopped'
+                repren += self.running and ', running' or ', stopped'
 
             if not self.monitored is None:
-                repr += self.monitored and ', monitored' or ', not monitored'
+                repren += self.monitored and ', monitored' or ', not monitored'
 
-            return repr
+            return repren
 
-
-monitor = Monit()
-monitor.run()
+if __name__ == '__main__':
+    monitor = Monit()
+    monitor.run()

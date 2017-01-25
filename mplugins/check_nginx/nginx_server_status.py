@@ -26,7 +26,7 @@ class NginxStatus(MPlugin):
             self.exit(CRITICAL, message="Can not reach URL")
 
         # Set timeout
-        timeout = self.config.get('timeout',TIMEOUT)
+        timeout = self.config.get('timeout', TIMEOUT)
         socket.setdefaulttimeout(int(timeout))
 
         data = self._get_data(url_open)
@@ -36,29 +36,29 @@ class NginxStatus(MPlugin):
             'handled',
             'requests'
         ]
-        
+
         gauge_data = [
             'connections',
             'reading',
             'writing',
-            'waiting'           
+            'waiting'
         ]
-        
+
         tmp_counter = {}
         for idx in counter_data:
             try:
-                tmp_counter[idx] = int(data.get(idx,0))
+                tmp_counter[idx] = int(data.get(idx, 0))
             except:
-                tmp_counter[idx] = data.get(idx,0)
-        
-        tmp_counter = self.counters(tmp_counter,'nginx')
-      
+                tmp_counter[idx] = data.get(idx, 0)
+
+        tmp_counter = self.counters(tmp_counter, 'nginx')
+
         tmp_gauge = {}
         for idx in gauge_data:
             try:
-                tmp_gauge[idx] = int(data.get(idx,0))
+                tmp_gauge[idx] = int(data.get(idx, 0))
             except:
-                tmp_gauge[idx] = data.get(idx,0)
+                tmp_gauge[idx] = data.get(idx, 0)
                         
         data = tmp_counter.copy()
         data.update(tmp_gauge)
@@ -100,6 +100,7 @@ class NginxStatus(MPlugin):
         result['writing'] = int(match3.group(2))
         result['waiting'] = int(match3.group(3))
         return result
-    
-monitor = NginxStatus()
-monitor.run()
+        
+if __name__ == '__main__':
+    monitor = NginxStatus()
+    monitor.run()

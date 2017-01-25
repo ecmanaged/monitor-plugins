@@ -14,25 +14,26 @@ from __mplugin import OK, CRITICAL
 class RunCmd(MPlugin):
     def run(self):
         cmd = self.config.get('command')
-        
+
         if not cmd:
             self.exit(CRITICAL, message="Invalid command")
-        
+
         result, stdout = self._run_command(cmd)
-        if result: result = CRITICAL
+        if result:
+            result = CRITICAL
 
         data = {}
         metrics = {}
         if self._is_number(stdout):
             data['result_num'] = stdout
             data['result_str'] = None
-            
+
             # Metric only if is numeric
             metrics = {
-              'result': {
-                'result': data['result_num']
-              }
-            }    
+                'result': {
+                    'result': data['result_num']
+                }
+            }
 
         elif self._is_string(stdout):
             data['result_str'] = stdout
@@ -49,10 +50,10 @@ class RunCmd(MPlugin):
         # Ensure we get full output
         myenv = os.environ.copy()
         myenv["COLUMNS"] = "2000"
-                
+
         result = 2
-        stdout, stderr = '',''
-        
+        stdout, stderr = '', ''
+
         for command in commands:
             try:
                 p = subprocess.Popen(
@@ -68,8 +69,8 @@ class RunCmd(MPlugin):
 
                 if stdout:
                     p.stdin.write(stdout)
-                    
-                stdout,stderr = p.communicate()
+
+                stdout, stderr = p.communicate()
                 result = p.wait()
 
             except Exception as e:
@@ -79,13 +80,17 @@ class RunCmd(MPlugin):
         if result and not stdout and stderr:
             stdout = stderr
 
-	# Try to conver string to int / float
-	try: stdout = int(stdout)
-	except ValueError:
-	    try: stdout = float(stdout)
-            except ValueError: pass
+        # Try to conver string to int / float
+        try:
+            stdout = int(stdout)
+        except ValueError:
+            try:
+                stdout = float(stdout)
+            except ValueError:
+                pass
 
         return result, stdout
-    
-monitor = RunCmd()
-monitor.run()
+
+if __name__ == '__main__':
+    monitor = RunCmd()
+    monitor.run()

@@ -20,9 +20,9 @@ class CheckRedis(MPlugin):
         if redis_py_error:
             self.exit(CRITICAL, message="please install redis python library (pip install redis)")
 
-        hostname = self.config.get('hostname','localhost')
-        port = self.config.get('port','6379')
-        password = self.config.get('password','')
+        hostname = self.config.get('hostname', 'localhost')
+        port = self.config.get('port', '6379')
+        password = self.config.get('password', '')
 
         r = None
 
@@ -39,7 +39,7 @@ class CheckRedis(MPlugin):
             self.exit(CRITICAL, message="can not obtain info")
 
 
-        if (not redis_info):
+        if not redis_info:
             self.exit(CRITICAL, message="can not obtain info")
 
         return redis_info
@@ -50,22 +50,22 @@ class CheckRedis(MPlugin):
         data = {}
 
         stat_dict = {
-                    'blocked_clients': 0,
-                    'connected_clients': 0,
-                    'connected_slaves': 0,
+            'blocked_clients': 0,
+            'connected_clients': 0,
+            'connected_slaves': 0,
 
-                    'evicted_keys': 0,
+            'evicted_keys': 0,
 
-                    'instantaneous_ops_per_sec': 0,
+            'instantaneous_ops_per_sec': 0,
 
-                    'keyspace_hits': 0,
-                    'keyspace_misses': 0,
+            'keyspace_hits': 0,
+            'keyspace_misses': 0,
 
-                    'used_cpu_sys': 0,
-                    'used_cpu_user': 0,
+            'used_cpu_sys': 0,
+            'used_cpu_user': 0,
 
-                    'used_memory': 0,
-                    'used_memory_rss': 0
+            'used_memory': 0,
+            'used_memory_rss': 0
         }
 
         for key in stat_dict.keys():

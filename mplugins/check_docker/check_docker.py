@@ -25,7 +25,10 @@ class CheckDocker(MPlugin):
             resp = session.get(base + url)
             respj = resp.json()
         except Exception as e:
-		    self.exit(CRITICAL, message="Run 'sudo usermod -a -G docker ecmanaged' and restart the agent")
+            self.exit(
+                CRITICAL,
+                message="Run 'sudo usermod -a -G docker ecmanaged' and restart the agent"
+                )
 
         container_id = None
         statj = None
@@ -110,24 +113,24 @@ class CheckDocker(MPlugin):
             if io['op'] == 'Async':
                 data['async'] = io['value']
 
-        data['network_tx_bytes']= data['network']['tx_bytes']
-        data['network_rx_bytes'] =data['network']['rx_bytes']
+        data['network_tx_bytes'] = data['network']['tx_bytes']
+        data['network_rx_bytes'] = data['network']['rx_bytes']
 
         tmp_counter = {}
         for idx in counter_data:
             try:
-                tmp_counter[idx] = int(data.get(idx,0))
+                tmp_counter[idx] = int(data.get(idx, 0))
             except:
-                tmp_counter[idx] = data.get(idx,0)
+                tmp_counter[idx] = data.get(idx, 0)
 
-        tmp_counter = self.counters(tmp_counter,'docker')
+        tmp_counter = self.counters(tmp_counter, 'docker')
 
         tmp_gauge = {}
         for idx in gauge_data:
             try:
-                tmp_gauge[idx] = int(data.get(idx,0))
+                tmp_gauge[idx] = int(data.get(idx, 0))
             except:
-                tmp_gauge[idx] = data.get(idx,0)
+                tmp_gauge[idx] = data.get(idx, 0)
 
         data = tmp_counter.copy()
         data.update(tmp_gauge)

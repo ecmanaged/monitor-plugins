@@ -16,10 +16,10 @@ class CheckFileContent(MPlugin):
         file = self.config.get('file_path')
         if not file:
             self.exit(CRITICAL, message="Invalid config")
-           
+
         if not os.path.isfile(file):
             self.exit(CRITICAL, message="File not found")
-        
+
         # Build hashes
         content = ''
         with open(file, 'rb') as afile:
@@ -31,8 +31,9 @@ class CheckFileContent(MPlugin):
         data = {
             'content': content,
         }
-        
-        self.exit(OK,data)
-        
-monitor = CheckFileContent()
-monitor.run()
+
+        self.exit(OK, data)
+
+if __name__ == '__main__':
+    monitor = CheckFileContent()
+    monitor.run()

@@ -25,7 +25,10 @@ class CheckIIS(MPlugin):
 
     def run(self):
         if wmi_import_error:
-            self.exit(CRITICAL, message="please install wmi(pip install wmi) and pywin32(https://sourceforge.net/projects/pywin32/files/pywin32/Build%20220/pywin32-220.win32-py2.7.exe/download)")
+            self.exit(
+                CRITICAL,
+                message="please install wmi(pip install wmi) and pywin32(https://sourceforge.net/projects/pywin32/files/pywin32/Build%20220/pywin32-220.win32-py2.7.exe/download)"
+                )
 
         stat = self.get_stats()
         if not stat:

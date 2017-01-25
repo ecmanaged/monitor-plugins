@@ -25,7 +25,7 @@ class HAproxyStatus(MPlugin):
         url = self.config.get('url', None)
         if not url:
             self.exit(CRITICAL, message="Please provide haproxy status url")
-        username = self.config.get('username',None)
+        username = self.config.get('username', None)
         if not username:
             self.exit(CRITICAL, message="Please provide haproxy username")
         password = self.config.get('password')
@@ -78,25 +78,51 @@ class HAproxyStatus(MPlugin):
     def run(self):
         data = self.get_stats()
 
-        counter_data = ['stot', 'bin', 'bout', 'dreq', 'dresp', 'ereq', 'econ', 'eresp', 'wretr', 'wredis',
-                        'hrsp_1xx', 'hrsp_2xx', 'hrsp_3xx', 'hrsp_4xx', 'hrsp_5xx', 'hrsp_other']
-        gauge_data = ['qcur', 'scur', 'slim', 'spct', 'req_rate', 'qtime', 'ctime', 'rtime', 'ttime' ]
+        counter_data = [
+            'stot',
+            'bin',
+            'bout',
+            'dreq',
+            'dresp',
+            'ereq',
+            'econ',
+            'eresp',
+            'wretr',
+            'wredis',
+            'hrsp_1xx',
+            'hrsp_2xx',
+            'hrsp_3xx',
+            'hrsp_4xx',
+            'hrsp_5xx',
+            'hrsp_other'
+            ]
+        gauge_data = [
+            'qcur',
+            'scur',
+            'slim',
+            'spct',
+            'req_rate',
+            'qtime',
+            'ctime',
+            'rtime',
+            'ttime'
+            ]
 
         tmp_counter = {}
         for idx in counter_data:
             try:
-                tmp_counter[idx] = int(data.get(idx,0))
+                tmp_counter[idx] = int(data.get(idx, 0))
             except:
-                tmp_counter[idx] = data.get(idx,0)
+                tmp_counter[idx] = data.get(idx, 0)
 
-        tmp_counter = self.counters(tmp_counter,'haproxy')
+        tmp_counter = self.counters(tmp_counter, 'haproxy')
 
         tmp_gauge = {}
         for idx in gauge_data:
             try:
-                tmp_gauge[idx] = int(data.get(idx,0))
+                tmp_gauge[idx] = int(data.get(idx, 0))
             except:
-                tmp_gauge[idx] = data.get(idx,0)
+                tmp_gauge[idx] = data.get(idx, 0)
 
         data = tmp_counter.copy()
         data.update(tmp_gauge)
@@ -149,8 +175,9 @@ class HAproxyStatus(MPlugin):
             }
         }
 
-        self.exit(OK, data, metrics)    
+        self.exit(OK, data, metrics)
                   
 if __name__ == '__main__':    
     monitor = HAproxyStatus()
     monitor.run()
+    

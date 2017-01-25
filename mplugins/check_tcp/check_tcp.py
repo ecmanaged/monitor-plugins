@@ -14,20 +14,20 @@ class CheckTCP(MPlugin):
     def run(self):
         host = self.config.get('host')
         port = self.config.get('port')
-        
+
         if not host or not port:
-           self.exit(CRITICAL, message="Invalid configuration")
-           
+            self.exit(CRITICAL, message="Invalid configuration")
+
         # Set timeout
-        timeout = self.config.get('timeout',TIMEOUT)
+        timeout = self.config.get('timeout', TIMEOUT)
         socket.setdefaulttimeout(int(timeout))
-        
+
         #create an AF_INET, STREAM socket (TCP)
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, msg:
             self.exit(CRITICAL, message="Failed to create socket: " + msg[1])
-            
+
         # Resolve
         try:
             remote_ip = socket.gethostbyname(host)
@@ -37,36 +37,36 @@ class CheckTCP(MPlugin):
         # Connect
         start_time = time()
         try:
-            s.connect((remote_ip,int(port)))
+            s.connect((remote_ip, int(port)))
         except socket.error, msg:
             self.exit(CRITICAL, message="%s" %msg[1])
         except:
             self.exit(CRITICAL, message="Unable to connect")
-            
+
         # Try to send something
-        try :
+        try:
             s.sendall('\n')
         except socket.error:
             self.exit(WARNING, message="Socket opened but send failed")
-            
-        # Close and return    
+
+        # Close and return
         s.close()
-        
+
         # Time spent
         mytime = "%.2f" % (time() - start_time)
-        
+
         data = {
             'time': mytime,
         }
-        
+
         metrics = {
             'Connection time': {
-              'time': str(mytime)
+                'time': str(mytime)
             }
         }
-        
-        self.exit(OK,data,metrics)
-        
-        
-monitor = CheckTCP()
-monitor.run()
+
+        self.exit(OK, data, metrics)
+
+if __name__ == '__main__':
+    monitor = CheckTCP()
+    monitor.run()

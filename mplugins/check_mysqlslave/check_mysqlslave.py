@@ -18,7 +18,13 @@ class CheckMySQLSlave(MPlugin):
     def mysql_repchk(self, host, port, user, password):
 
         try:
-            conn = Database.connect(host=host, port=int(port), user=user, passwd=password, connect_timeout=10)
+            conn = Database.connect(
+                host=host,
+                port=int(port),
+                user=user,
+                passwd=password,
+                connect_timeout=10
+                )
         except:
             self.exit(CRITICAL, message="Unable to connect to MySQL Database")
         try:
@@ -68,7 +74,3 @@ class CheckMySQLSlave(MPlugin):
 if __name__ == '__main__':
     monitor = CheckMySQLSlave()
     monitor.run()
-
-
-
-
