@@ -23,7 +23,7 @@ class RedisQueueLength(MPlugin):
         hostname = self.config.get('hostname', 'localhost')
         port = self.config.get('port', '6379')
         password = self.config.get('password', '')
-        queue_name = self.config.get('queue_name', 'queue:test')
+        queue_name = self.config.get('queue_name')
 
         r = None
 
