@@ -79,7 +79,7 @@ class CheckDocker(MPlugin):
         mem_percent = 0
         cpu_percent = 0
 
-        if stat['memory_stats']['limit'] != 0:
+        if stat.get('memory_stats'):
             mem_percent = float(stat['memory_stats']['usage']) / float(stat['memory_stats']['limit']) * 100.0
         data['mem_percent'] = mem_percent
 
