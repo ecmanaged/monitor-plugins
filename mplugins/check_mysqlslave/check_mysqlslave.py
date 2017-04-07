@@ -64,11 +64,11 @@ class CheckMySQLSlave(MPlugin):
 
         if data["Slave_IO_Running"] == "Yes" and data["Slave_SQL_Running"] == "Yes":
             self.exit(OK, data, metrics)
-        else:
-            self.exit(CRITICAL, message="Slave IO or Slave SQL is not running")
-            
+
         if "Slave_SQL_Running_State" in data:
             self.exit(CRITICAL, message=data["Slave_SQL_Running_State"])
+
+        self.exit(CRITICAL, message="Slave IO or Slave SQL is not running")
 
 
 if __name__ == '__main__':
