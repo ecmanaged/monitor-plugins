@@ -25,7 +25,7 @@ class PostfixQueue(MPlugin):
                 count = os.popen('sudo find %s -type f | wc -l' % queue_path)
                 data[queue] = int(count.readlines()[0].strip())
             except Exception as e:
-                self.exit(OK, message=str(e))
+                self.exit(CRITICAL, message=str(e))
 
         return data
 
