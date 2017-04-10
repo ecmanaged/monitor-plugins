@@ -39,19 +39,16 @@ class RedisQueueLength(MPlugin):
         except:
             self.exit(CRITICAL, message="can not obtain queue length")
 
-
         if not queue_length:
             self.exit(CRITICAL, message="can not obtain queue length")
 
-        return {queue_name: queue_length}
+        return {'length': queue_length}
 
     def run(self):
-        stat = self.get_stats()
-
-        data = stat
+        data = self.get_stats()
 
         metrics = {
-            'redis_queue': data
+            'redis_queue': data['length']
         }
         self.exit(OK, data, metrics)
 
