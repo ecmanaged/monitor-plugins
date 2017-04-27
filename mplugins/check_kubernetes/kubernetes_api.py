@@ -32,29 +32,25 @@ NODE_CONDITIONS_MAP = {
 
 class CheckKubernetesAPI(MPlugin):
     def run(self):
-        # self.kube_api = self.config.get('url')
-        self.kube_api = 'http://23.251.131.146:8001'
+        self.kube_api = self.config.get('url')
+        try:
+            # check kubernetes api health_status
+            result = self._send_request("healthz", as_json=False)
 
-        self.data = {}
+            if not result.content == 'ok':
+                self.exit(CRITICAL, message='health_status: Critical')
 
-        metrics = {}
+            # report cluster component statuses
+            self._report_cluster_component_statuses()
 
-        # try:
-        # check kubernetes api health_status
-        result = self._send_request("healthz", as_json=False)
+            self._report_deployment_metrics()
 
-        if not result.content == 'ok':
-            self.exit(CRITICAL, message='health_status: Critical')
+            self._report_nodes_metrics()
 
-        # report cluster component statuses
-        self._report_cluster_component_statuses()
-
-        self._report_deployment_metrics()
-
-        self.exit(OK, self.data, metrics)
+            self.exit(OK, message='health_status: OK')
  
-        # except Exception as e:
-        #     self.exit(CRITICAL, message='Error getting data from Kubernetes API')
+        except Exception as e:
+            self.exit(CRITICAL, message='Error getting data from Kubernetes API')
 
     def _report_node_conditions_metrics(self, node_name, node_conditions):
         for condition in node_conditions:
@@ -72,26 +68,8 @@ class CheckKubernetesAPI(MPlugin):
 
         for node in nodes['items']:
             node_name = node['metadata']['name']
-            self.data.update({node_name : {'capacity': {}, 'allocatable': {}}})
             node_status = node['status']
             self._report_node_conditions_metrics(node_name, node_status['conditions'])
-            if 'spec' in node and 'unschedulable' in node['spec']:
-                if node['spec']['unschedulable']:
-                    continue
-            node_capacity = node_status['capacity']
-            node_allocatable = node_status['allocatable']
-            # self._report_node_resource_metrics('capacity', node_name, node_capacity)
-            # self._report_node_resource_metrics('allocatable', node_name, node_allocatable)
-
-    # def _report_node_resource_metrics(self, resource, node_name, metrics):
-    #     temp = {}
-    #     for metric_name, metric_value in metrics.items():
-    #         if metric_name == "memory":
-    #             metric_name += "_bytes"
-    #             metric_value = self.convert_memory_string_to_bytes(metric_value)
-    #         temp[metric_name] = metric_value
-
-    #     self.data[node_name][resource] = temp
 
     def _report_deployment_metrics(self):
         deployments = self._send_request("/apis/extensions/v1beta1/deployments")
@@ -127,31 +105,6 @@ class CheckKubernetesAPI(MPlugin):
         result = requests.get("{}/{}".format(self.kube_api, endpoint))
         return result.json() if as_json else result
 
-    def convert_memory_string_to_bytes(self, memory_string):
-        """Conversion from memory represented in string format to bytes"""
-        if "m" in memory_string:
-            memory = float(memory_string.split('m')[0])
-            return memory / 1000
-        elif "K" in memory_string:
-            memory = float(memory_string.split('K')[0])
-            return self._compute_memory_bytes(memory_string, memory, 1)
-        elif "M" in memory_string:
-            memory = float(memory_string.split('M')[0])
-            return self._compute_memory_bytes(memory_string, memory, 2)
-        elif "G" in memory_string:
-            memory = float(memory_string.split('G')[0])
-            return self._compute_memory_bytes(memory_string, memory, 3)
-        elif "T" in memory_string:
-            memory = float(memory_string.split('T')[0])
-            return self._compute_memory_bytes(memory_string, memory, 4)
-        else:
-            return float(memory_string)
-
-    def _compute_memory_bytes(self, memory_string, memory, power):
-        if "i" in memory_string:
-            return memory * math.pow(1024, power)
-        return memory * math.pow(1000, power)
-
 if __name__ == '__main__':
-    monitor = CheckKubernetesAPI()
-    monitor.run()
+    MONITOR = CheckKubernetesAPI()
+    MONITOR.run()
