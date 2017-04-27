@@ -99,3 +99,4 @@ class CheckRedis(MPlugin):
 if __name__ == '__main__':
     monitor = CheckRedis()
     monitor.run()
+    

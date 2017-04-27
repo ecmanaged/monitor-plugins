@@ -128,7 +128,7 @@ class ElasticSearchStatus(MPlugin):
         return data
 
     def run(self):
-        host = self.config.get('hostname','http://localhost:9200')
+        host = self.config.get('hostname', 'http://localhost:9200')
 
         data = self.cluster_health(host)
         data.update(self.stats_store(host))
@@ -185,3 +185,5 @@ class ElasticSearchStatus(MPlugin):
 if __name__ == '__main__':
     monitor = ElasticSearchStatus()
     monitor.run()
+
+    
