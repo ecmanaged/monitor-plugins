@@ -12,9 +12,9 @@ class CheckMountPoint(MPlugin):
         mountpoint = self.config.get('mountpoint')
 
         if os.path.ismount(mountpoint):
-            self.exit(OK, message="mounted")
+            self.exit(OK, message=mountpoint + " is mounted")
         else:
-            self.exit(CRITICAL, message='not mounted')
+            self.exit(CRITICAL, message=mountpoint + ' is not mounted')
 
 if __name__ == '__main__':
     monitor = CheckMountPoint()
