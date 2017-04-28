@@ -290,7 +290,7 @@ class MPlugin:
         # Read counters
         if self._counters is None:
             self._counters = self._counters_read()
-            
+
         # Get interval
         interval = self._get_counter_interval(index)
 
@@ -315,7 +315,7 @@ class MPlugin:
 
         if not self._counters.get(index):
             self._counters[index] = {}
-            
+
         if not self._counters.get(INTERVAL_INDEX):
             self._counters[INTERVAL_INDEX] = {}
 
@@ -325,7 +325,7 @@ class MPlugin:
         current_counter = self._counters[index]
         new_counter = {}
         retval = {}
-        
+
         if not self._is_dict(obj):
             return retval
 
