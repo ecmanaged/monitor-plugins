@@ -192,12 +192,14 @@ SELECT relname,
         user = self.config.get('username', '')
         password = self.config.get('password', '')
         dbname = self.config.get('dbname', 'postgres')
-        relations = self.config.get('relations', [])
+        # relations = self.config.get('relations', [])
 
+
+        relations = []
         self.data = {}
 
-        if relations:
-            relations = relations.split(',')
+        # if relations:
+        #     relations = relations.split(',')
 
         key = '%s:%s:%s' % (host, port, dbname)
         db = self.get_connection(host, port, user, password, dbname)
