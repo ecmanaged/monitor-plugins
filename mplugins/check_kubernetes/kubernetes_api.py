@@ -32,44 +32,56 @@ NODE_CONDITIONS_MAP = {
 
 class CheckKubernetesAPI(MPlugin):
     def run(self):
-        self.kube_api = self.config.get('url')
+        #self.kube_api = self.config.get('url')
+        self.kube_api = 'http://23.251.131.146:8001'
+        self.data = {}
+        self.metrics = {}
+        self.status = None
+        self.message = ''
+
         try:
             # check kubernetes api health_status
             result = self._send_request("healthz", as_json=False)
 
             if not result.content == 'ok':
-                self.exit(CRITICAL, message='health_status: Critical')
+                self.status = CRITICAL
+                self.message += 'health_status: Critical'
+
+            self.message = 'health_status: OK'
 
             # report cluster component statuses
             self._report_cluster_component_statuses()
 
-            self._report_deployment_metrics()
+            #self._report_deployment_metrics()
 
             self._report_nodes_metrics()
 
-            self.exit(OK, message='health_status: OK')
- 
+            if not self.status:
+                self.status = OK
+
+            self.exit(self.status, data=self.data, metrics=self.metrics, message=self.message)
+
         except Exception as e:
             self.exit(CRITICAL, message='Error getting data from Kubernetes API')
 
-    def _report_node_conditions_metrics(self, node_name, node_conditions):
-        for condition in node_conditions:
-            condition_type = condition["type"]
-            if condition_type in NODE_CONDITIONS_MAP:
-                condition_map = NODE_CONDITIONS_MAP[condition_type]
-                condition_status = condition['status']
-                if not condition_status == condition_map['expected_status']:
-                    self.exit(CRITICAL, message='{}: {} is {}'.format(node_name,
-                                                                      condition_type,
-                                                                      condition_status))
+    def _report_cluster_component_statuses(self):
+        component_statuses = self._send_request("/api/v1/componentstatuses")
 
-    def _report_nodes_metrics(self):
-        nodes = self._send_request("/api/v1/nodes")
+        for component in component_statuses['items']:
+            component_conditions = component['conditions']
+            for condition in component_conditions:
+                if 'type' in condition and condition['type'] != 'Healthy':
+                    self.status = CRITICAL
+                    self.message += ', Component {} is {}'.format(
+                        component['metadata']['name'],
+                        component['metadata']['message'])
 
-        for node in nodes['items']:
-            node_name = node['metadata']['name']
-            node_status = node['status']
-            self._report_node_conditions_metrics(node_name, node_status['conditions'])
+                if 'status' in condition and not condition['status']:
+                    self.status = CRITICAL
+                    self.message += ', Component {} is {}'.format(
+                        component['metadata']['name'],
+                        component['metadata']['message'])
+
 
     def _report_deployment_metrics(self):
         deployments = self._send_request("/apis/extensions/v1beta1/deployments")
@@ -80,26 +92,37 @@ class CheckKubernetesAPI(MPlugin):
             deployment_available_replicas = deployment_status.get('availableReplicas', 0)
 
             if deployment_replicas != deployment_available_replicas:
-                self.exit(CRITICAL,
-                          message='{} on {} has unavailable replicas'.format(
-                              deployment['metadata']['name'],
-                              deployment['metadata']['namespace']))
+                self.status = CRITICAL
+                self.message += ', {} on {} has unavailable replicas'.format(
+                    deployment['metadata']['name'],
+                    deployment['metadata']['namespace'])
 
-    def _report_cluster_component_statuses(self):
-        component_statuses = self._send_request("/api/v1/componentstatuses")
+    def _report_nodes_metrics(self):
+        nodes = self._send_request("/api/v1/nodes")
 
-        for component in component_statuses['items']:
-            component_conditions = component['conditions']
-            for condition in component_conditions:
-                if 'type' in condition and condition['type'] != 'Healthy':
-                    self.exit(CRITICAL,
-                              message='Component {} is unhealthy'.format(
-                                  component['metadata']['name']))
+        self.data['node_count'] = len(nodes['items'])
+        self.metrics = {
+            'Number of Nodes':{
+                'Number of Nodes': self.data['node_count']
+            }
+        }
 
-                if 'status' in condition and not condition['status']:
-                    self.exit(CRITICAL,
-                              message='Component {} is status is false'.format(
-                                  component['metadata']['name']))
+        for node in nodes['items']:
+            node_name = node['metadata']['name']
+            node_status = node['status']
+            self._report_node_conditions_metrics(node_name, node_status['conditions'])
+
+    def _report_node_conditions_metrics(self, node_name, node_conditions):
+        for condition in node_conditions:
+            condition_type = condition["type"]
+            if condition_type in NODE_CONDITIONS_MAP:
+                condition_map = NODE_CONDITIONS_MAP[condition_type]
+                condition_status = condition['status']
+                if not condition_status == condition_map['expected_status']:
+                    self.status = CRITICAL
+                    self.message += ', {}: {} is {}'.format(node_name,
+                                                          condition_type,
+                                                          condition['reason'])
 
     def _send_request(self, endpoint, as_json=True):
         result = requests.get("{}/{}".format(self.kube_api, endpoint))
