@@ -67,7 +67,7 @@ class CheckURL(MPlugin):
         else:
             if headers:
                 try:
-                    req = urllib2.Request(url, json.dumps({}), headers)
+                    req = urllib2.Request(url, headers=headers)
                 except:
                     self.exit(CRITICAL, message="Unable to request URL")
             else:
