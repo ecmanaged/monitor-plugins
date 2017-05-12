@@ -21,23 +21,43 @@ class MongoDBStatus(MPlugin):
     def get_stats(self):
         host = self.config.get('hostname', 'localhost')
         port = int(self.config.get('port', '27017'))
-        database = self.config.get('database')
-        username = self.config.get('username')
-        password = self.config.get('password')
+        database = self.config.get('database', None)
+        username = self.config.get('user', None)
+        password = self.config.get('password', None)
 
         try:
             if username and password and database:
-                c = Client("mongodb://"+username+":"+password+"@"+host+"/"+database, port)
+                uri = "mongodb://{}:{}@{}:{}/{}".format(username,
+                                                        password,
+                                                        host,
+                                                        port,
+                                                        database)
+                cli = Client(uri)
+                check_db = cli[database]
+                check_db.authenticate(username, password)
+                return check_db.command("serverStatus")
+
             elif username and password:
-                c = Client('mongodb://'+username+':'+password+'@'+host+'/', port)
+                uri = "mongodb://{}:{}@{}:{}".format(username,
+                                                     password,
+                                                     host,
+                                                     port)
+                cli = Client(uri)
+                return cli.test.command("serverStatus")
+
             elif database:
-                c = Client('mongodb://'+host+'/'+database, port)
+                uri = "mongodb://{}:{}/{}".format(host,
+                                                  port,
+                                                  database)
+                cli = Client(uri)
+                check_db = cli[database]
+                return check_db.command("serverStatus")
             else:
-                c = Client(host, port)
+                cli = Client(host, port)
+                return cli.test.command("serverStatus")
+
         except (ConnectionFailure, AutoReconnect):
             self.exit(CRITICAL, message="unable to connect to mongodb")
-        else:
-            return c.test.command("serverStatus")
 
     def run(self):
         if import_error:
