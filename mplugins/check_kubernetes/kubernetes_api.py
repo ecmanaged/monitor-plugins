@@ -32,8 +32,7 @@ NODE_CONDITIONS_MAP = {
 
 class CheckKubernetesAPI(MPlugin):
     def run(self):
-        #self.kube_api = self.config.get('url')
-        self.kube_api = 'http://23.251.131.146:8001'
+        self.kube_api = self.config.get('url')
         self.data = {}
         self.metrics = {}
         self.status = None
