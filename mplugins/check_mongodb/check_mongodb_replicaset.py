@@ -77,37 +77,40 @@ class MongoDBReplicaSetStatus(MPlugin):
         message = ''
         status = OK
         data = {}
-        metrics = {
-            'Replication Lag': {}
-        }
+        metrics = {}
+
         primary = None
+        current = None
 
         members = replSet.get('members')
 
         for member in members:
+            if member.get('self'):
+                current = member
             if int(member.get('state')) == 1:
                 primary = member
+
+        if not current:
+            self.exit(CRITICAL, message="current replica not found")
 
         if not primary:
             self.exit(CRITICAL, message="primary replica not found")
 
-        for member in members:
-            name = member['name']
-            state = member['state']
-            if state not in [1, 2]:
-                status = CRITICAL
-                if not message:
-                    status = self.get_state_name(state)
-                    message = "{} is in {}".format(name, status)
-                else:
-                    message += ", {} is in {}".format(name, status)
+        name = current['name']
+        state = current['state']
 
-            lag = primary['optimeDate'] - member['optimeDate']
-            data[name] = {'replicationLag': lag.total_seconds()}
+        if state not in [1, 2]:
+            status = CRITICAL
+            message = "{} is in {}".format(name, status)
 
-            metric_data = {name: lag.total_seconds()}
+        lag = primary['optimeDate'] - current['optimeDate']
+        data['replicationLag'] = lag.total_seconds()
 
-            metrics['Replication Lag'].update(metric_data)
+        metrics = {
+            'Replication Lag': {
+                'Seconds': data['replicationLag']
+            }
+        }
 
         self.exit(status, data=data, metrics=metrics, message=message)
 
