@@ -120,8 +120,8 @@ class CheckKubernetesAPI(MPlugin):
                 if not condition_status == condition_map['expected_status']:
                     self.status = CRITICAL
                     self.message += ', {}: {} is {}'.format(node_name,
-                                                          condition_type,
-                                                          condition['reason'])
+                                                            condition_type,
+                                                            condition['reason'])
 
     def _send_request(self, endpoint, as_json=True):
         result = requests.get("{}/{}".format(self.kube_api, endpoint))
