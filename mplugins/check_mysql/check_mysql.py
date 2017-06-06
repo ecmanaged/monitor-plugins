@@ -81,7 +81,9 @@ class MySQLStatus(MPlugin):
             'Handler_update',
             'Handler_write',
             'Innodb_row_lock_time',
-            'Innodb_row_lock_waits'
+            'Innodb_row_lock_waits',
+            'Connection_errors_internal',
+            'Connection_errors_max_connections',
         ]
 
         gauge_data = [
@@ -177,14 +179,18 @@ class MySQLStatus(MPlugin):
                 'Read': data['Innodb_pages_read'],
                 'Written': data['Innodb_pages_written']
             },
-            'Innodb row lock stats':  {
+            'Innodb row lock stats': {
                 'Currently being waited': data['Innodb_row_lock_current_waits'],
                 'Time spent in acquiring ': data['Innodb_row_lock_time'],
                 'Average time to acquire': data['Innodb_row_lock_time_avg'],
                 'Maximum time to acquire': data['Innodb_row_lock_time_max'],
                 'Number of times waited': data['Innodb_row_lock_waits']
-            }
-
+            },
+            'Errors': {
+                'Connection errors internal': data['Connection_errors_internal'],
+                'Aborted connects': data['Aborted_connects'],
+                'Connection errors max connections': data['Connection_errors_max_connections'],
+            },
         }
 
         self.exit(OK, data, metrics)

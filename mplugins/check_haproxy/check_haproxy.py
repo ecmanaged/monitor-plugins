@@ -176,8 +176,9 @@ class HAproxyStatus(MPlugin):
         }
 
         self.exit(OK, data, metrics)
-                  
-if __name__ == '__main__':    
+
+
+if __name__ == '__main__':
     monitor = HAproxyStatus()
     monitor.run()
     
