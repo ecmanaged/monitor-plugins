@@ -84,6 +84,7 @@ class MySQLStatus(MPlugin):
             'Innodb_row_lock_waits',
             'Connection_errors_internal',
             'Connection_errors_max_connections',
+            'Slow_launch_threads',
         ]
 
         gauge_data = [
@@ -94,7 +95,6 @@ class MySQLStatus(MPlugin):
             'Open_streams',
             'Open_table_definitions',
             'Open_tables',
-            'Slow_launch_threads',
             'Threads_cached',
             'Threads_connected',
             'Threads_running'
